@@ -2,8 +2,9 @@
 """A module for filtering logs"""
 import re
 import os
+import mysql.connector
 import logging
-from typing import List
+from typing import List, Tuple
 
 
 # Construct the regex pattern to match the fields separated by the separator
@@ -12,7 +13,12 @@ patterns = {
     'replace': lambda x: r'\g<field>={}'.format(x),
 }
 
-PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+PII_FIELDS: Tuple = ("name", "email", "phone", "ssn", "password")
+
+USERNAME: str = os.getenv("PERSONAL_DATA_DB_USERNAME")
+PASSWORD: str = os.getenv("PERSONAL_DATA_DB_PASSWORD")
+HOST: str = os.getenv("PERSONAL_DATA_DB_HOST")
+DATABASE: str = os.getenv("PERSONAL_DATA_DB_NAME")
 
 
 def filter_datum(
@@ -46,16 +52,11 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """Creates a connector to a database """
-    db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = os.getenv("PERSONAL_DATA_DB_NAME", "")
-    db_user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    db_pwd = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
     connection = mysql.connector.connect(
-        host=db_host,
-        port=3306,
-        user=db_user,
-        password=db_pwd,
-        database=db_name,
+        host=HOST,
+        user=USERNAME,
+        password=PASSWORD,
+        database=DATABASE
     )
     return connection
 
