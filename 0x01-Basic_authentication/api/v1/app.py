@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 from api.v1.auth.auth import Auth
+
 import os
 
 
@@ -15,7 +16,7 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 auth_type = getenv('AUTH_TYPE', 'auth')
-if auth_type == auth:
+if auth_type == 'auth':
     auth = Auth()
 
 
@@ -40,16 +41,18 @@ def forbidden(error) -> str:
     return jsonify({"error": "Forbidden"}), 403
 
 
-@before_request
+@app.before_request
 def authenticate_user():
     """ Authenticates a user before processing a request.
     """
-    excluded_paths = [
-            '/api/v1/status/',
-            '/api/v1/unauthorized/',
-            '/api/v1/forbidden/']
+    if Auth:
+        excluded_paths = [
+                '/api/v1/status/',
+                '/api/v1/unauthorized/',
+                '/api/v1/forbidden/',
+        ]
 
-	 if auth.require_auth(request.path, excluded_paths):
+        if auth.require_auth(request.path, excluded_paths):
             auth_header = auth.authorization_header(request)
             user = auth.current_user(request)
             if auth_header is None:
