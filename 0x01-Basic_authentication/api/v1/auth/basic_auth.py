@@ -19,3 +19,5 @@ class BasicAuth(Auth):
                 if len(split_string) == 2:
                     return split_string[1]
             return None
+
+    
