@@ -19,16 +19,14 @@ class Auth:
         if excluded_paths is None or len(excluded_paths) == 0:
             return True
 
-        # check if path is in the list of excluded_paths
-        if path in excluded_paths:
-            return False
+        for excluded_path in excluded_paths:
+            # Remove the trailing wildcard if it exists
+            if excluded_path.endswith("*"):
+                excluded_path = excluded_path[:-1]
 
-        normal_path = path.rstrip('/')  # remove a trailing slash if it exists
-        normal_exclude_paths = [p.rstrip('/') for p in excluded_paths]
-
-        # Check if normal_path is in normal_exclude_paths
-        if normal_path in normal_exclude_paths:
-            return False
+            # Check if the path starts with the excluded path
+            if path.startswith(excluded_path):
+                return False
 
         return True
 
