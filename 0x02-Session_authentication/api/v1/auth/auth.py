@@ -11,23 +11,18 @@ class Auth:
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """ Checks if a path requires authentication
         """
-        # check if path is None
-        if path is None:
+        if not path:
             return True
-
-        # check if excluded_path is None or empty
-        if excluded_paths is None or len(excluded_paths) == 0:
+        if not excluded_paths or excluded_paths == []:
             return True
-
-        for excluded_path in excluded_paths:
-            # Remove the trailing wildcard if it exists
-            if excluded_path.endswith("*"):
-                excluded_path = excluded_path[:-1]
-
-            # Check if the path starts with the excluded path
-            if path.startswith(excluded_path):
+        if path in excluded_paths:
+            return False
+        normalized_path = path.rstrip('/')  # Remove trailing slashes
+        for paths in excluded_paths:
+            # Remove trailing slashes
+            normalized_excluded_path = paths.rstrip('/')
+            if normalized_path == normalized_excluded_path:
                 return False
-
         return True
 
     def authorization_header(self, request=None) -> str:
@@ -38,6 +33,6 @@ class Auth:
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """
+        """ Gets the current user from the request.
         """
         return None
