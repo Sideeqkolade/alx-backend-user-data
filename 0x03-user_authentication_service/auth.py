@@ -13,7 +13,7 @@ from typing import Union
 def _hash_password(password: str) -> bytes:
     """Hashes a password.
     """
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt(rounds=12))
 
 
 def _generate_uuid() -> str:
