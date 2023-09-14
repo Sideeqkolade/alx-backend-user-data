@@ -11,7 +11,11 @@ from typing import Union
 
 
 def _hash_password(password: str) -> bytes:
-    """Hashes a password.
+    """
+    Hash a password for a user
+    :param password: the password to be hashed
+    :return:
+        The hashed password
     """
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt(rounds=12))
 
