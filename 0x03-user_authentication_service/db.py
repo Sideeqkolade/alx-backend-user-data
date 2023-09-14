@@ -41,23 +41,19 @@ class DB:
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """Find a user in the database based on input arguments.
         """
-        try:
-            # Create a filter based on the provided keyword arguments (kwargs)
-            query = self._session.query(User)
-            for key, value in kwargs.items():
-                query = query.filter(getattr(User, key) == value)
-
-            user = query.first()
-
-            if user is None:
-                raise NoResultFound("No matching user found.")
-            return user
-        except NoResultFound as e:
-            raise e
-        except InvalidRequestError as e:
-            raise e
+        Queries the database and returns the match if found
+        :param kwargs: Arbitrary args
+        :return:
+            Value of the kwargs passed
+        """
+        if not kwargs:
+            raise InvalidRequestError
+        query = self._session.query(User).filter_by(**kwargs)
+        user = query.first()
+        if not user:
+            raise NoResultFound
+        return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """updates a user based on user_id
