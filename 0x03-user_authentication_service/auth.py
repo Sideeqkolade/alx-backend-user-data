@@ -11,19 +11,9 @@ from typing import Union
 
 
 def _hash_password(password: str) -> bytes:
-    """Hash a password string using bcrypt.
-
-    Args:
-        password (str): The password to be hashed.
-
-    Returns:
-        bytes: The salted hash of the input password.
+    """Hashes a password.
     """
-    # Generate a salt and hash the password with the salt
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-
-    return hashed_password
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
